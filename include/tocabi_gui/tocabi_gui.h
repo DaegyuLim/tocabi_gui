@@ -160,6 +160,12 @@ protected slots:
     virtual void inityaw();
     virtual void simvj();
     virtual void imureset();
+    virtual void walkingspeedcb(int value);
+    virtual void walkingdurationcb(int value);
+    virtual void walkingangvelcb(int value);
+    virtual void kneetargetanglecb(int value);
+    virtual void footheightcb(int value);
+
     void handletaskmsg();
 
 private:
@@ -211,6 +217,17 @@ public:
 
     ros::Publisher task_que_pub;
     tocabi_controller::TaskCommandQue task_que_msg;
+
+    ros::Publisher walkingspeed_pub;
+    std_msgs::Float32 walkingspeed_msg;
+    ros::Publisher walkingduration_pub;
+    std_msgs::Float32 walkingduration_msg;
+    ros::Publisher walkingangvel_pub;
+    std_msgs::Float32 walkingangvel_msg;
+    ros::Publisher kneetargetangle_pub;
+    std_msgs::Float32 kneetargetangle_msg;
+    ros::Publisher footheight_pub;
+    std_msgs::Float32 footheight_msg;
 
     ros::Subscriber sysstatesub;
 

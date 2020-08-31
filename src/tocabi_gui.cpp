@@ -68,7 +68,13 @@ TocabiGui::TocabiGui()
     imusub = nh_.subscribe("/tocabi/imu", 1, &TocabiGui::imuCallback, this);
     task_pub = nh_.advertise<tocabi_controller::TaskCommand>("/tocabi/taskcommand", 100);
     task_que_pub = nh_.advertise<tocabi_controller::TaskCommandQue>("/tocabi/taskquecommand", 100);
-
+    
+    walkingspeed_pub = nh_.advertise<std_msgs::Float32 >("/tocabi/walkingspeedcommand", 100);
+    walkingduration_pub = nh_.advertise<std_msgs::Float32>("/tocabi/walkingdurationcommand", 100);
+    walkingangvel_pub = nh_.advertise<std_msgs::Float32>("/tocabi/walkingangvelcommand", 100);
+    kneetargetangle_pub = nh_.advertise<std_msgs::Float32>("/tocabi/kneetargetanglecommand", 100);
+    footheight_pub = nh_.advertise<std_msgs::Float32>("/tocabi/footheightcommand", 100);
+    
     gain_msg.data.resize(33);
     //ecatlabels = {ui_.}
 }
@@ -157,6 +163,12 @@ void TocabiGui::initPlugin(qt_gui_cpp::PluginContext &context)
 
     connect(ui_.vjbtn, SIGNAL(pressed()), this, SLOT(simvj()));
     connect(ui_.imuresetbtn, SIGNAL(pressed()), this, SLOT(imureset()));
+
+    connect(ui_.walking_speed_slider, SIGNAL(valueChanged(int)), this, SLOT(walkingspeedcb(int) ));
+    connect(ui_.walking_duration_slider, SIGNAL(valueChanged(int)), this, SLOT(walkingdurationcb(int) ));
+    connect(ui_.walking_angvel_slider, SIGNAL(valueChanged(int)), this, SLOT(walkingangvelcb(int) ));
+    connect(ui_.knee_target_angle_slider, SIGNAL(valueChanged(int)), this, SLOT(kneetargetanglecb(int) ));
+    connect(ui_.foot_height_slider, SIGNAL(valueChanged(int)), this, SLOT(footheightcb(int) ));
 
     if (mode == "simulation")
     {
@@ -1110,6 +1122,56 @@ void TocabiGui::posgravconcb()
 {
     com_msg.data = std::string("positiongravcontrol");
     com_pub.publish(com_msg);
+}
+
+void TocabiGui::walkingspeedcb(int value)
+{
+    double max_speed = 0.6;
+    double min_speed = -0.4;
+    double scale = value;
+    
+    walkingspeed_msg.data = scale/100*(max_speed - min_speed) + min_speed;
+    walkingspeed_pub.publish(walkingspeed_msg);
+}
+
+void TocabiGui::walkingdurationcb(int value)
+{
+    double max_duration = 1;
+    double min_duration = 0.2;
+    double scale = value;
+
+    walkingduration_msg.data = scale/100*(max_duration - min_duration) + min_duration;
+    walkingduration_pub.publish(walkingduration_msg);
+}
+
+void TocabiGui::walkingangvelcb(int value)
+{
+    double max_angvel = 1;
+    double min_angvel = -1;
+    double scale = value;
+
+    walkingangvel_msg.data = scale/100*(max_angvel - min_angvel) + min_angvel;
+    walkingangvel_pub.publish(walkingangvel_msg);
+}
+
+void TocabiGui::kneetargetanglecb(int value)
+{
+    double max_knee = M_PI/2;
+    double min_knee = 0;
+    double scale = value;
+
+    kneetargetangle_msg.data = scale/100*(max_knee - min_knee) + min_knee;
+    kneetargetangle_pub.publish(kneetargetangle_msg);
+}
+
+void TocabiGui::footheightcb(int value)
+{
+    double max_footz = 0.1;
+    double min_footz = 0.005;
+    double scale = value;
+
+    footheight_msg.data = scale/100*(max_footz - min_footz) + min_footz;
+    footheight_pub.publish(footheight_msg);
 }
 
 } // namespace tocabi_gui
