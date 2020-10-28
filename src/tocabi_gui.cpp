@@ -1160,7 +1160,8 @@ void TocabiGui::kneetargetanglecb(int value)
     double min_knee = 0;
     double scale = value;
 
-    kneetargetangle_msg.data = scale/100*(max_knee - min_knee) + min_knee;
+    // kneetargetangle_msg.data = scale/100*(max_knee - min_knee) + min_knee;
+    kneetargetangle_msg.data = scale/180*M_PI;
     kneetargetangle_pub.publish(kneetargetangle_msg);
 }
 
@@ -1170,7 +1171,8 @@ void TocabiGui::footheightcb(int value)
     double min_footz = 0.005;
     double scale = value;
 
-    footheight_msg.data = scale/100*(max_footz - min_footz) + min_footz;
+    // footheight_msg.data = scale/100*(max_footz - min_footz) + min_footz;
+    footheight_msg.data = scale/100;
     footheight_pub.publish(footheight_msg);
 }
 
